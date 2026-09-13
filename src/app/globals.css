@@ -1,26 +1,35 @@
-@import "tailwindcss";
+﻿@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+  --ink: #EAF6F8;
+  --paper: #0A0D10;
+  --paper-2: #10151A;
+  --surface: #141B21;
+  --line: rgba(234,246,248,0.14);
+  --teal: #3FCBE0;
+  --teal-deep: #123B37;
+  --amber: #F2A83E;
+  --coral: #FF6E5E;
+  --white: #F5FBFC;
+  --display: "Space Grotesk", sans-serif;
+  --body: "Source Serif 4", serif;
+  --mono: "IBM Plex Mono", monospace;
 }
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  line-height: 1.6;
+  overflow-x: hidden;
 }
+a { color: inherit; }
+input, select, textarea { color: var(--ink); }
+input::placeholder, textarea::placeholder { color: #8FA8AD; opacity: 1; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }

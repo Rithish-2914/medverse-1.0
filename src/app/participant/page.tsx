@@ -1,25 +1,12 @@
 ﻿"use client";
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-
-interface Kit { disease: string; patient: string; problem: string; tech: string; budget: string; constraint: string; drawnAt: string; }
-interface RoundState { currentRoundIdx: number; status: string; roundName: string; }
-interface Team { code: string; name: string; track: string; lead_name: string; }
-interface MeData { team: Team; kit: Kit | null; roundState: RoundState | null; graceUsed: boolean; }
-interface Submission { id: number; round_idx: number; content: string | null; file_url: string | null; file_name: string | null; status: string; feedback: string | null; created_at: string; }
-
-const STATUS_BADGE: Record<string, string> = {
-  pending: "bg-amber-500/15 text-amber-300 border-amber-500/25",
-  accepted: "bg-emerald-500/15 text-emerald-300 border-emerald-500/25",
-  rejected: "bg-red-500/15 text-red-300 border-red-500/25",
-};
-const TRACK_COLOR: Record<string, string> = { A: "text-cyan-400", B: "text-violet-400", C: "text-emerald-400" };
-const inputCls = "w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/60 transition-all text-sm";
+import Nav from "@/components/Nav";
 
 export default function ParticipantPage() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [me, setMe] = useState<MeData | null>(null);
-  const [history, setHistory] = useState<Submission[]>([]);
+  const [me, setMe] = useState<any>(null);
+  const [history, setHistory] = useState<any[]>([]);
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
   const [loginErr, setLoginErr] = useState("");
@@ -29,6 +16,25 @@ export default function ParticipantPage() {
   const [loading, setLoading] = useState(false);
   const [kitRevealed, setKitRevealed] = useState(false);
   const [checking, setChecking] = useState(true);
+
+  const S = {
+    wrap: { maxWidth:"1180px", margin:"0 auto", padding:"0 32px" },
+    sectionHead: { maxWidth:"640px", marginBottom:"52px" },
+    tag: { fontFamily:"var(--mono)", fontSize:"0.75rem", textTransform:"uppercase" as const, letterSpacing:"0.08em", color:"var(--coral)", marginBottom:"12px", display:"block" },
+    h2: { fontFamily:"var(--display)", fontWeight:600, fontSize:"clamp(1.8rem,3.4vw,2.6rem)", letterSpacing:"-0.01em", marginBottom:"14px" },
+    input: { width:"100%", fontFamily:"var(--mono)", fontSize:"0.9rem", padding:"13px 16px", border:"1px solid var(--line)", borderRadius:"3px", background:"var(--paper)", color:"var(--ink)", minWidth:"220px" },
+    btn: { fontFamily:"var(--mono)", textTransform:"uppercase" as const, fontSize:"0.8rem", letterSpacing:"0.03em", background:"var(--coral)", color:"#fff", border:"none", padding:"14px 22px", borderRadius:"3px", cursor:"pointer", whiteSpace:"nowrap" as const, transition:"transform 0.15s" },
+    shell: { background:"var(--surface)", border:"1px solid var(--line)", borderRadius:"10px", overflow:"hidden" },
+    loginBox: { padding:"44px 36px", textAlign:"center" as const },
+    pcard: { background:"var(--paper)", border:"1px solid var(--line)", borderRadius:"8px", padding:"22px" },
+    h4: { fontFamily:"var(--display)", fontSize:"1rem", marginBottom:"14px" },
+    badge: (status:string) => {
+      let bg = "rgba(226,147,59,0.18)", col = "var(--amber)";
+      if(status==="accepted") { bg = "rgba(63,203,224,0.18)"; col = "var(--teal)"; }
+      if(status==="rejected") { bg = "rgba(198,80,63,0.18)"; col = "var(--coral)"; }
+      return { display:"inline-block", fontFamily:"var(--mono)", fontSize:"0.68rem", textTransform:"uppercase" as const, padding:"3px 9px", borderRadius:"20px", letterSpacing:"0.03em", background:bg, color:col };
+    }
+  };
 
   const loadData = useCallback(async () => {
     const [meRes, histRes] = await Promise.all([fetch("/api/team/me"), fetch("/api/team/history")]);
@@ -64,173 +70,133 @@ export default function ParticipantPage() {
     setSubmitOk(true); setContent(""); await loadData(); setLoading(false);
   }
 
-  if (checking) return (
-    <main className="min-h-screen bg-[#060612] flex items-center justify-center">
-      <div className="w-8 h-8 rounded-full border-2 border-cyan-500/30 border-t-cyan-400 animate-spin" />
-    </main>
-  );
+  if (checking) return <div style={{minHeight:"100vh", background:"var(--paper)"}} />;
 
   if (!loggedIn) return (
-    <main className="min-h-screen bg-[#060612] text-white flex items-center justify-center px-4">
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-cyan-600/8 rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-violet-600/8 rounded-full blur-[100px]" />
-      </div>
-      <div className="relative z-10 w-full max-w-sm">
-        <Link href="/" className="flex items-center gap-2 mb-8 text-slate-400 hover:text-white transition-colors text-sm">
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-          Home
-        </Link>
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center font-black text-lg">M</div>
-          <div><h1 className="text-xl font-black tracking-tight">Team Portal</h1><p className="text-slate-400 text-xs">MEDVERSE — Operation 9 Hours</p></div>
-        </div>
-        {loginErr && <div className="mb-4 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{loginErr}</div>}
-        <div className="bg-white/3 border border-white/8 rounded-2xl p-6 space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Team Code</label>
-            <input className={inputCls} placeholder="MV-A-1234" value={code} onChange={e => setCode(e.target.value.toUpperCase())} onKeyDown={e => e.key === "Enter" && login()} />
+    <>
+      <Nav active="participant" />
+      <section style={{padding:"88px 0", minHeight:"calc(100vh - 160px)"}}>
+        <div style={S.wrap}>
+          <div style={S.sectionHead}>
+            <span style={S.tag}>Authenticated — participants only</span>
+            <h2 style={S.h2}>Participant Portal</h2>
+            <p style={{color:"#C7DEE1", fontSize:"1.02rem"}}>Your team code and password, set at registration. Wrong credentials are rejected — this is real login.</p>
           </div>
-          <div>
-            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Password</label>
-            <input className={inputCls} type="password" placeholder="Team password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && login()} />
+          
+          <div style={S.shell}>
+            <div style={S.loginBox}>
+              <p style={{fontFamily:"var(--mono)", textTransform:"uppercase", fontSize:"0.75rem", color:"var(--ink)"}}>Team Login</p>
+              <p style={{color:"#C7DEE1", maxWidth:"44ch", margin:"8px auto 22px", fontSize:"0.95rem"}}>Enter your team code and the password you set when registering.</p>
+              <div style={{display:"flex", gap:"10px", justifyContent:"center", flexWrap:"wrap"}}>
+                <input style={S.input} placeholder="Team code, e.g. MV-A-2291" value={code} onChange={e=>setCode(e.target.value.toUpperCase())} />
+                <input style={S.input} type="password" placeholder="Password" value={password} onChange={e=>setPassword(e.target.value)} />
+                <button style={{...S.btn, opacity:loading?0.5:1}} onClick={login} disabled={loading}>{loading?"Entering...":"Enter Portal"}</button>
+              </div>
+              {loginErr && <p style={{fontFamily:"var(--mono)", fontSize:"0.72rem", color:"var(--coral)", marginTop:"14px"}}>{loginErr}</p>}
+            </div>
           </div>
-          <button onClick={login} disabled={loading} className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-bold text-sm disabled:opacity-50 hover:shadow-lg hover:shadow-cyan-500/25 transition-all">
-            {loading ? "Signing in..." : "Enter"}
-          </button>
         </div>
-        <p className="text-center text-slate-500 text-xs mt-4">
-          No team yet? <Link href="/register" className="text-cyan-400 hover:underline">Register here</Link>
-        </p>
-      </div>
-    </main>
+      </section>
+    </>
   );
 
+  const ROUNDS = ["Ideation","Mini Review","Twist Round","Final Review","Final Pitch"];
   const canSubmit = me?.roundState?.status === "active" && (me?.roundState?.currentRoundIdx ?? 99) < 4;
   const thisRound = me?.roundState?.currentRoundIdx ?? 0;
   const accepted = history.some(s => s.round_idx === thisRound && s.status === "accepted");
 
   return (
-    <main className="min-h-screen bg-[#060612] text-white">
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-600/6 rounded-full blur-[140px]" />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-violet-600/6 rounded-full blur-[100px]" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,212,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,212,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
-      </div>
-
-      {/* Header */}
-      <header className="relative z-10 border-b border-white/5 backdrop-blur-md bg-black/20 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center font-black text-sm">M</div>
-          <div>
-            <p className="font-bold text-sm">{me?.team.name}</p>
-            <p className={`text-xs font-semibold ${TRACK_COLOR[me?.team.track ?? "A"]}`}>{me?.team.code} · Track {me?.team.track}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          {me?.roundState && (
-            <div className={`px-3 py-1 rounded-full text-xs font-bold border ${me.roundState.status === "active" ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : me.roundState.status === "ended" ? "bg-red-500/10 border-red-500/20 text-red-400" : "bg-amber-500/10 border-amber-500/20 text-amber-400"}`}>
-              {me.roundState.status === "active" ? "LIVE" : me.roundState.status === "ended" ? "ENDED" : "STANDBY"} · {me.roundState.roundName}
-            </div>
-          )}
-          <button onClick={logout} className="text-xs text-slate-500 hover:text-white transition-colors">Sign out</button>
-        </div>
-      </header>
-
-      <div className="relative z-10 max-w-3xl mx-auto px-4 py-8 space-y-6">
-
-        {/* Kit Card */}
-        {!me?.kit ? (
-          <div className="rounded-2xl border border-dashed border-white/15 p-8 text-center">
-            <div className="text-4xl mb-3">🔒</div>
-            <p className="text-slate-400 text-sm">Your sealed kit will unlock when you make your first submission in Round 1.</p>
-          </div>
-        ) : !kitRevealed ? (
-          <div className="rounded-2xl border border-cyan-500/30 bg-cyan-500/5 p-8 text-center cursor-pointer hover:bg-cyan-500/10 transition-all" onClick={() => setKitRevealed(true)}>
-            <div className="text-4xl mb-3 animate-pulse">📁</div>
-            <p className="text-cyan-300 font-bold text-lg mb-1">Your Case File is Ready</p>
-            <p className="text-slate-400 text-sm">Click to reveal your sealed scenario</p>
-          </div>
-        ) : (
-          <div className="rounded-2xl border border-white/10 bg-white/3 overflow-hidden">
-            <div className="px-6 py-4 border-b border-white/8 flex items-center justify-between">
-              <h2 className="font-bold text-white">Your Case File</h2>
-              <span className="px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold">{me.kit.disease}</span>
-            </div>
-            <div className="p-6 space-y-5">
-              <div className="p-4 rounded-xl bg-amber-500/8 border border-amber-500/15">
-                <p className="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1.5">The Patient</p>
-                <p className="text-sm text-slate-300 leading-relaxed">{me.kit.patient}</p>
-              </div>
-              <div className="p-4 rounded-xl bg-blue-500/8 border border-blue-500/15">
-                <p className="text-xs font-bold text-blue-400 uppercase tracking-wider mb-1.5">The Problem</p>
-                <p className="text-sm text-slate-300 leading-relaxed">{me.kit.problem}</p>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 rounded-xl bg-white/4 border border-white/8">
-                  <p className="text-xs text-slate-500 mb-1">Assigned Technology</p>
-                  <p className="text-sm font-semibold text-white">{me.kit.tech}</p>
-                </div>
-                <div className="p-3 rounded-xl bg-white/4 border border-white/8">
-                  <p className="text-xs text-slate-500 mb-1">Budget Cap</p>
-                  <p className="text-sm font-semibold text-emerald-400">{me.kit.budget}</p>
+    <>
+      <Nav active="participant" />
+      <section style={{padding:"88px 0"}}>
+        <div style={S.wrap}>
+          
+          <div style={{...S.shell, marginBottom:"40px"}}>
+            <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:"14px", padding:"20px 32px", background:"var(--paper-2)", borderBottom:"1px solid var(--line)"}}>
+              <div style={{fontFamily:"var(--display)", fontWeight:600, fontSize:"1.05rem"}}>{me.team.name} <span style={{opacity:0.5, marginLeft:"8px", fontSize:"0.9rem"}}>{me.team.code} · Track {me.team.track}</span></div>
+              <div style={{fontFamily:"var(--mono)", fontSize:"0.8rem", textAlign:"right"}}>
+                <div>Current round</div>
+                <div style={{color:"var(--coral)", fontWeight:500}}>
+                  {me.roundState?.roundName ?? "—"} <span style={S.badge(me.roundState?.status==="active"?"pending":"rejected")}>{me.roundState?.status==="active"?"LIVE":me.roundState?.status==="ended"?"ENDED":"STANDBY"}</span>
                 </div>
               </div>
-              <div className="p-4 rounded-xl bg-red-500/8 border border-red-500/15">
-                <p className="text-xs font-bold text-red-400 uppercase tracking-wider mb-1.5">Hard Constraint</p>
-                <p className="text-sm text-slate-300 leading-relaxed">{me.kit.constraint}</p>
-              </div>
+              <button onClick={logout} style={{fontFamily:"var(--mono)", fontSize:"0.75rem", textTransform:"uppercase", background:"transparent", color:"var(--ink)", border:"1px solid var(--line)", padding:"8px 16px", borderRadius:"3px", cursor:"pointer"}}>Log out</button>
             </div>
-          </div>
-        )}
-
-        {/* Submit */}
-        {canSubmit && !accepted && (
-          <div className="rounded-2xl border border-white/10 bg-white/3 p-6">
-            <h2 className="font-bold text-white mb-1">Submit for {me?.roundState?.roundName}</h2>
-            <p className="text-xs text-slate-400 mb-4">Describe your solution clearly. You can resubmit after a rejection.</p>
-            {submitErr && <div className="mb-3 px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs">{submitErr}</div>}
-            {submitOk && <div className="mb-3 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs">Submitted successfully!</div>}
-            <textarea className={inputCls + " resize-none"} rows={5} placeholder="Describe your approach, solution design, and how it addresses the patient scenario..." value={content} onChange={e => setContent(e.target.value)} />
-            <button onClick={submit} disabled={loading || content.trim().length < 10} className="mt-3 w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-bold text-sm disabled:opacity-40 hover:shadow-lg hover:shadow-cyan-500/25 transition-all">
-              {loading ? "Submitting..." : "Submit"}
-            </button>
-          </div>
-        )}
-        {accepted && (
-          <div className="px-5 py-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-sm font-semibold flex items-center gap-2">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-            Round accepted! Wait for the next round to open.
-          </div>
-        )}
-        {!canSubmit && me?.roundState?.status !== "active" && (
-          <div className="px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-slate-400 text-sm">
-            {me?.roundState?.status === "ended" ? "This round has ended. Wait for the organiser to start the next round." : "No round is currently active. Stand by."}
-          </div>
-        )}
-
-        {/* History */}
-        {history.length > 0 && (
-          <div className="rounded-2xl border border-white/10 bg-white/3 overflow-hidden">
-            <div className="px-6 py-4 border-b border-white/8">
-              <h2 className="font-bold text-white">Submission History</h2>
-            </div>
-            <div className="divide-y divide-white/5">
-              {history.map(s => (
-                <div key={s.id} className="px-6 py-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-slate-500">Round {s.round_idx + 1}</span>
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold border ${STATUS_BADGE[s.status] ?? "bg-white/5 text-slate-400 border-white/10"}`}>{s.status.toUpperCase()}</span>
-                  </div>
-                  {s.content && <p className="text-xs text-slate-400 line-clamp-2">{s.content}</p>}
-                  {s.file_name && <p className="text-xs text-cyan-400">📎 {s.file_name}</p>}
-                  {s.feedback && <p className="text-xs text-amber-400 mt-1 italic">Feedback: {s.feedback}</p>}
-                </div>
+            
+            <div style={{display:"flex", padding:"24px 32px 6px", gap:"4px", flexWrap:"wrap"}}>
+              {ROUNDS.map((r,i) => (
+                <div key={i} style={{flex:1, minWidth:"110px", textAlign:"center", fontFamily:"var(--mono)", fontSize:"0.7rem", textTransform:"uppercase", padding:"10px 6px", borderBottom: i<=thisRound ? (i===thisRound ? "3px solid var(--coral)" : "3px solid var(--teal)") : "3px solid var(--line)", color: i<=thisRound ? (i===thisRound ? "var(--coral)" : "var(--ink)") : "#93ADB2", fontWeight: i===thisRound ? 600 : 400}}>{r}</div>
               ))}
             </div>
+
+            <div style={{padding:"28px 32px 34px", display:"grid", gridTemplateColumns:"1fr 1fr", gap:"26px"}}>
+              
+              <div style={S.pcard}>
+                <h4 style={S.h4}>Your sealed kit</h4>
+                {!me.kit ? (
+                  <div style={{fontFamily:"var(--mono)", fontSize:"0.82rem", lineHeight:1.9, color:"#D3E8EA"}}>
+                    Kit unlocks when you make your first submission.
+                  </div>
+                ) : !kitRevealed ? (
+                  <button onClick={()=>setKitRevealed(true)} style={{...S.btn, background:"var(--teal)", color:"var(--teal-deep)"}}>Reveal Kit</button>
+                ) : (
+                  <div style={{fontFamily:"var(--mono)", fontSize:"0.82rem", lineHeight:1.9, color:"#D3E8EA"}}>
+                    <b style={{color:"var(--ink)",display:"inline-block",width:"100px"}}>Problem:</b>{me.kit.disease}<br/>
+                    <b style={{color:"var(--ink)",display:"inline-block",width:"100px"}}>Patient:</b>{me.kit.patient}<br/>
+                    <b style={{color:"var(--ink)",display:"inline-block",width:"100px"}}>Tech:</b>{me.kit.tech}<br/>
+                    <b style={{color:"var(--ink)",display:"inline-block",width:"100px"}}>Budget:</b>{me.kit.budget}<br/>
+                    <b style={{color:"var(--ink)",display:"inline-block",width:"100px"}}>Constraint:</b><span style={{color:"var(--coral)"}}>{me.kit.constraint}</span><br/>
+                  </div>
+                )}
+              </div>
+
+              <div style={S.pcard}>
+                <h4 style={S.h4}>Submit this round</h4>
+                {accepted && (
+                  <div style={{background:"rgba(63,203,224,0.12)", borderLeft:"2px solid var(--teal)", padding:"10px 14px", borderRadius:"0 4px 4px 0", marginBottom:"12px", color:"var(--ink)", fontFamily:"var(--mono)", fontSize:"0.72rem"}}>
+                    This round is locked — a judge has accepted your submission. Wait for the next round.
+                  </div>
+                )}
+                {!canSubmit && !accepted && (
+                  <div style={{background:"rgba(226,147,59,0.12)", borderLeft:"2px solid var(--amber)", padding:"10px 14px", borderRadius:"0 4px 4px 0", marginBottom:"12px", color:"var(--ink)", fontFamily:"var(--mono)", fontSize:"0.72rem"}}>
+                    {me.roundState?.status === "ended" ? "Round has ended." : "Round not active."}
+                  </div>
+                )}
+                {canSubmit && !accepted && (
+                  <div>
+                    <textarea style={{width:"100%", fontFamily:"var(--body)", fontSize:"0.92rem", padding:"12px", border:"1px solid var(--line)", borderRadius:"4px", minHeight:"100px", resize:"vertical", background:"var(--surface)", color:"var(--ink)"}} placeholder="Describe your solution for this round..." value={content} onChange={e=>setContent(e.target.value)} />
+                    <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginTop:"12px", gap:"10px", flexWrap:"wrap"}}>
+                      <span style={{fontFamily:"var(--mono)", fontSize:"0.72rem", color:"#8FA8AD"}}>{submitErr ? <span style={{color:"var(--coral)"}}>{submitErr}</span> : submitOk ? <span style={{color:"var(--teal)"}}>Submitted!</span> : "Judges review every submission — resubmit freely."}</span>
+                      <button onClick={submit} disabled={loading||content.length<10} style={{...S.btn, background:"var(--teal)", color:"var(--teal-deep)", fontWeight:600, opacity:(loading||content.length<10)?0.5:1}}>{loading?"Submitting...":"Submit"}</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+            </div>
+
+            <div style={{...S.pcard, margin:"0 32px 30px"}}>
+              <h4 style={S.h4}>Submission log</h4>
+              {history.length === 0 ? (
+                <div style={{fontFamily:"var(--mono)", fontSize:"0.78rem", padding:"6px 0", color:"#C7DEE1"}}>No submissions yet.</div>
+              ) : (
+                history.map(s => (
+                  <div key={s.id} style={{padding:"12px 0", borderBottom:"1px dashed var(--line)"}}>
+                    <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"6px"}}>
+                      <span style={{fontFamily:"var(--mono)", fontSize:"0.78rem", color:"#C7DEE1"}}>Round {s.round_idx+1} · {new Date(s.created_at).toLocaleString()}</span>
+                      <span style={S.badge(s.status)}>{s.status}</span>
+                    </div>
+                    {s.content && <p style={{fontSize:"0.92rem", color:"var(--ink)", whiteSpace:"pre-wrap"}}>{s.content}</p>}
+                    {s.file_name && <p style={{fontSize:"0.85rem", color:"var(--teal)", marginTop:"4px"}}>📎 {s.file_name}</p>}
+                    {s.feedback && <div style={{marginTop:"8px", padding:"8px 10px", background:"var(--paper-2)", borderLeft:"2px solid var(--line)", borderRadius:"0 4px 4px 0", fontSize:"0.76rem", color:"var(--ink)"}}><b>Feedback:</b> {s.feedback}</div>}
+                  </div>
+                ))
+              )}
+            </div>
+
           </div>
-        )}
-      </div>
-    </main>
+        </div>
+      </section>
+    </>
   );
 }
