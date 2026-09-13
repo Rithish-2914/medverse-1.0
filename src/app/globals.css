@@ -1,8 +1,4 @@
-﻿@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
+﻿:root {
   color-scheme: dark;
   --ink: #EAF6F8;
   --paper: #0A0D10;
@@ -31,3 +27,4 @@ a { color: inherit; }
 input, select, textarea { color: var(--ink); }
 input::placeholder, textarea::placeholder { color: #8FA8AD; opacity: 1; }
 a:focus-visible, button:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+
