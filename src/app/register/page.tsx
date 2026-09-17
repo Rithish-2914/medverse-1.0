@@ -39,11 +39,11 @@ export default function RegisterPage() {
   async function submit() {
     setLoading(true); setErr("");
     const members = [];
-    if(leaderName && leaderReg) members.push({name:leaderName, reg_no:leaderReg, is_lead:true});
-    if(m2Name && m2Reg) members.push({name:m2Name, reg_no:m2Reg, is_lead:false});
-    if(m3Name && m3Reg) members.push({name:m3Name, reg_no:m3Reg, is_lead:false});
-    if(m4Name && m4Reg) members.push({name:m4Name, reg_no:m4Reg, is_lead:false});
-    if(m5Name && m5Reg) members.push({name:m5Name, reg_no:m5Reg, is_lead:false});
+    if(leaderName && leaderReg) members.push({name:leaderName, regNo:leaderReg, is_lead:true});
+    if(m2Name && m2Reg) members.push({name:m2Name, regNo:m2Reg, is_lead:false});
+    if(m3Name && m3Reg) members.push({name:m3Name, regNo:m3Reg, is_lead:false});
+    if(m4Name && m4Reg) members.push({name:m4Name, regNo:m4Reg, is_lead:false});
+    if(m5Name && m5Reg) members.push({name:m5Name, regNo:m5Reg, is_lead:false});
 
     if(members.length < 3) {
       setErr("Minimum 3 members required.");
@@ -53,7 +53,7 @@ export default function RegisterPage() {
     const res = await fetch("/api/auth/register", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ teamName, track, password, members })
+      body: JSON.stringify({ teamName, leadName: leaderName, size: members.length, track, password, members })
     });
     const data = await res.json();
     if(!res.ok) { setErr(data.error || "Registration failed"); setLoading(false); return; }
