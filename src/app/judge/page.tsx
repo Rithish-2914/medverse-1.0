@@ -240,7 +240,7 @@ export default function JudgePage() {
                     ))}
                   </div>
 
-                  {accepted && (
+                  {accepted && activeRound > 0 && (
                     <div style={S.pcard}>
                       <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"24px"}}>
                         <h4 style={{...S.h4, margin:0}}>Score This Team</h4>
