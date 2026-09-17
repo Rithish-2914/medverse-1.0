@@ -1,4 +1,4 @@
-﻿export const problems = [
+export const problems = [
   {
     id: "AI-01",
     imageLink: "",

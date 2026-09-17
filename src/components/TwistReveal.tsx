@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState } from 'react';
 
 export default function TwistReveal({ twist, budget, description }: { twist: string, budget: number, description: string }) {

@@ -1,4 +1,4 @@
-﻿import { problems } from '@/data/problems';
+import { problems } from '@/data/problems';
 
 export const ROUNDS = ["Ideation", "Mini Review", "Mid-Point Review", "Final Review", "Final Pitch"];
 
