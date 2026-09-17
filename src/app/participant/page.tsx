@@ -16,11 +16,16 @@ export default function ParticipantPortal() {
   const [modalMedia, setModalMedia] = useState<{type: 'image' | 'video', url: string} | null>(null);
 
   useEffect(() => {
-    fetch('/api/team/me').then(r => r.json()).then(d => {
+    fetch("/api/team/me").then(r => r.json()).then(async d => {
       if (!d.error) {
+        if (!d.kit && d.roundState?.status === "active") {
+          await fetch("/api/team/draw-kit", { method: "POST" });
+          const meRes = await fetch("/api/team/me");
+          if (meRes.ok) d = await meRes.json();
+        }
         setMe(d);
         if (d.kit) setKitRevealed(true);
-        fetch('/api/team/history').then(r => r.json()).then(hd => setHistory(hd));
+        fetch("/api/team/history").then(r => r.json()).then(hd => setHistory(hd));
       }
     });
   }, []);
@@ -164,13 +169,11 @@ export default function ParticipantPortal() {
             <div style={{padding:"28px 32px 34px", display:"grid", gridTemplateColumns:"1fr 1fr", gap:"26px"}}>
               
               <div style={S.pcard}>
-                <h4 style={S.h4}>Your sealed kit</h4>
+                <h4 style={S.h4}>Your assigned kit</h4>
                 {!me.kit ? (
                   <div style={{fontFamily:"var(--mono)", fontSize:"0.82rem", lineHeight:1.9, color:"#D3E8EA"}}>
-                    Click below to receive your assigned problem.
+                    {me.roundState?.status === "active" ? "Assigning your problem..." : "Your kit is currently sealed. It will automatically open when Round 1 begins."}
                   </div>
-                ) : !kitRevealed ? (
-                  <button onClick={drawKit} style={{...S.btn, background:"var(--teal)", color:"var(--teal-deep)"}}>Reveal Kit</button>
                 ) : (
                   <div>
                     <div style={{marginBottom: "16px"}}>
@@ -254,4 +257,5 @@ export default function ParticipantPortal() {
     </>
   );
 }
+
 
