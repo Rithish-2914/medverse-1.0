@@ -62,6 +62,23 @@ export default function ParticipantPage() {
     setLoggedIn(false); setMe(null); setHistory([]);
   }
 
+  async function drawKit() {
+    if (loading) return;
+    setLoading(true);
+    const res = await fetch("/api/team/draw-kit", { method: "POST" });
+    if (res.ok) {
+      const meRes = await fetch("/api/team/me");
+      if (meRes.ok) {
+        const data = await meRes.json();
+        setMe(data);
+      }
+      setKitRevealed(true);
+    } else {
+      alert("Error drawing kit.");
+    }
+    setLoading(false);
+  }
+
   async function submit() {
     setLoading(true); setSubmitErr(""); setSubmitOk(false);
     const res = await fetch("/api/team/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content }) });
@@ -135,10 +152,10 @@ export default function ParticipantPage() {
                 <h4 style={S.h4}>Your sealed kit</h4>
                 {!me.kit ? (
                   <div style={{fontFamily:"var(--mono)", fontSize:"0.82rem", lineHeight:1.9, color:"#D3E8EA"}}>
-                    Kit unlocks when you make your first submission.
+                    Click below to receive your assigned problem.
                   </div>
                 ) : !kitRevealed ? (
-                  <button onClick={()=>setKitRevealed(true)} style={{...S.btn, background:"var(--teal)", color:"var(--teal-deep)"}}>Reveal Kit</button>
+                  <button onClick={drawKit} style={{...S.btn, background:"var(--teal)", color:"var(--teal-deep)"}}>Reveal Kit</button>
                 ) : (
                   <div style={{fontFamily:"var(--mono)", fontSize:"0.82rem", lineHeight:1.9, color:"#D3E8EA"}}>
                     <b style={{color:"var(--ink)",display:"inline-block",width:"100px"}}>Problem:</b>{me.kit.disease}<br/>
@@ -146,6 +163,13 @@ export default function ParticipantPage() {
                     <b style={{color:"var(--ink)",display:"inline-block",width:"100px"}}>Tech:</b>{me.kit.tech}<br/>
                     <b style={{color:"var(--ink)",display:"inline-block",width:"100px"}}>Budget:</b>{me.kit.budget}<br/>
                     <b style={{color:"var(--ink)",display:"inline-block",width:"100px"}}>Constraint:</b><span style={{color:"var(--coral)"}}>{me.kit.constraint}</span><br/>
+                    {me.kit.twist && (
+                      <div style={{marginTop:"16px", padding:"12px", background:"var(--paper-2)", border:"1px solid var(--coral)", borderRadius:"6px"}}>
+                        <b style={{color:"var(--coral)", display:"block", marginBottom:"6px"}}>⚠️ TWIST REVEALED</b>
+                        <b style={{color:"var(--ink)", display:"inline-block", width:"100px"}}>New Limitation:</b> <span style={{color:"var(--coral)"}}>{me.kit.twist.limitation}</span><br/>
+                        <b style={{color:"var(--ink)", display:"inline-block", width:"100px"}}>New Budget:</b> <span style={{fontFamily:"var(--mono)", color:"var(--teal-deep)", fontWeight:600}}>{me.kit.twist.budget}</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -200,3 +224,5 @@ export default function ParticipantPage() {
     </>
   );
 }
+
+

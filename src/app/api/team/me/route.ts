@@ -2,6 +2,7 @@
 import sql from '@/lib/db';
 import { getSession } from '@/lib/auth';
 import { ROUNDS, maskedRounds } from '@/lib/constants';
+import { problems } from '@/data/problems';
 
 export async function GET(req: NextRequest) {
   const s = getSession(req, 'team_session');
@@ -12,24 +13,36 @@ export async function GET(req: NextRequest) {
   if (!team) return NextResponse.json({ error: 'Team not found.' }, { status: 404 });
 
   const kitRows = await sql`SELECT * FROM kits WHERE team_code = ${s.code}`;
+  const kit = kitRows[0];
   const stateRows = await sql`SELECT * FROM round_state WHERE id = 1`;
   const state = stateRows[0];
   const started: number[] = JSON.parse(state?.started_rounds || '[]');
 
-  const graceRows = await sql`
-    SELECT 1 FROM submissions WHERE team_code = ${s.code} AND content = '__GRACE__' LIMIT 1
-  `;
+  const graceRows = await sql`SELECT 1 FROM submissions WHERE team_code = ${s.code} AND content = '__GRACE__' LIMIT 1`;
+
+  const twistRows = await sql`SELECT text FROM twist_deck WHERE revealed = 1 ORDER BY id DESC LIMIT 1`;
+  const twistActive = twistRows[0]?.text === 'TWIST_PHASE_ACTIVE';
+  
+  let specificTwist = null;
+  if (kit && twistActive) {
+    const pId = kit.disease.split(':')[0];
+    const p = problems.find(x => x.id === pId);
+    if (p) {
+      specificTwist = { limitation: p.twistLimitation, budget: 'Rs. ' + p.twistBudget.toLocaleString() };
+    }
+  }
 
   return NextResponse.json({
     team,
-    kit: kitRows[0] ? {
-      disease: kitRows[0].disease,
-      patient: kitRows[0].patient,
-      problem: kitRows[0].problem,
-      tech: kitRows[0].tech,
-      budget: kitRows[0].budget,
-      constraint: kitRows[0].constraint_text,
-      drawnAt: kitRows[0].drawn_at,
+    kit: kit ? {
+      disease: kit.disease,
+      patient: kit.patient,
+      problem: kit.problem,
+      tech: kit.tech,
+      budget: kit.budget,
+      constraint: kit.constraint_text,
+      drawnAt: kit.drawn_at,
+      twist: specificTwist
     } : null,
     roundState: state ? {
       currentRoundIdx: state.current_round_idx,
