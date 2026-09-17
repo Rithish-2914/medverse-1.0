@@ -4,9 +4,9 @@ import Link from "next/link";
 import Nav from "@/components/Nav";
 
 const s: React.CSSProperties = {};
-const ROUNDS = ["Ideation","Mini Review","Twist Round","Final Review","Final Pitch"];
+const ROUNDS = ["Ideation","Mini Review","Mid-Point Review","Final Review","Final Pitch"];
 
-interface PublicState { currentRoundIdx:number; status:string; roundName:string; totalRounds:number; revealedTwist:string|null; }
+interface PublicState { currentRoundIdx:number; status:string; roundName:string; totalRounds:number; revealedMid-Point Review:string|null; }
 const KITS_A = [
   {disease:"Type 2 Diabetes (rural)",tech:"SMS-based chatbot",budget:"₹4,000",constraint:"No smartphone required"},
   {disease:"Hypertension screening",tech:"TinyML on microcontroller",budget:"₹6,500",constraint:"Battery-only power"},
@@ -102,10 +102,10 @@ export default function Home() {
                       <div key={i} title={r} style={{flex:1,height:"3px",borderRadius:"2px",background:i<state.currentRoundIdx?"var(--teal)":i===state.currentRoundIdx?(state.status==="active"?"var(--amber)":"var(--coral)"):"rgba(255,255,255,0.1)"}}/>
                     ))}
                   </div>
-                  {state.revealedTwist && <div style={{marginTop:"10px",padding:"8px 10px",background:"rgba(242,168,62,0.12)",borderLeft:"2px solid var(--amber)",borderRadius:"0 4px 4px 0",fontFamily:"var(--mono)",fontSize:"0.72rem",color:"var(--amber)"}}>TWIST: {state.revealedTwist}</div>}
+                  {state.revealedMid-Point Review && <div style={{marginTop:"10px",padding:"8px 10px",background:"rgba(242,168,62,0.12)",borderLeft:"2px solid var(--amber)",borderRadius:"0 4px 4px 0",fontFamily:"var(--mono)",fontSize:"0.72rem",color:"var(--amber)"}}>MID-POINT REVIEW: {state.revealedMid-Point Review}</div>}
                 </div>
               )}
-              <div style={{fontFamily:"var(--mono)",color:"#7FA79B",fontSize:"0.7rem",marginTop:"10px"}}>IDEATION → MINI REVIEW → TWIST → FINAL REVIEW → PITCH</div>
+              <div style={{fontFamily:"var(--mono)",color:"#7FA79B",fontSize:"0.7rem",marginTop:"10px"}}>IDEATION → MINI REVIEW → MID-POINT REVIEW → FINAL REVIEW → PITCH</div>
             </div>
           </div>
         </div>
@@ -151,7 +151,7 @@ export default function Home() {
             {[
               {n:"1",h:"Ideation Round",p:"Teams draw a sealed kit — disease, assigned technology, starting budget, constraints — and submit an idea through the portal.",fix:<><b style={{color:"var(--coral)"}}>Fix:</b> no fixed attempt cap — submit and resubmit as needed until a judge accepts one.</>},
               {n:"2",h:"Mini Review",p:"Judges review every accepted idea against the published rubric and return written feedback before development starts.",fix:<><b style={{color:"var(--coral)"}}>Fix:</b> itemised costing sheet required — no budget line can go unexplained.</>},
-              {n:"3",h:"Twist Round",p:"Details for this round are revealed once the organiser starts it — including a constraint change drawn from the sealed twist deck.",fix:<><b style={{color:"var(--coral)"}}>Fix:</b> twist is drawn and revealed live — no team gets advance notice.</>},
+              {n:"3",h:"Mid-Point Review",p:"Details for this round are revealed once the organiser starts it — including new round requirements.",fix:<><b style={{color:"var(--coral)"}}>Fix:</b> round starts live.</>},
               {n:"4",h:"Final Review",p:"Judges evaluate how the solution evolved since the previous round, then teams get one last window for improvements.",fix:<><b style={{color:"var(--coral)"}}>Fix:</b> rounds are started and ended by the organiser manually — no countdown, no timezone confusion.</>},
               {n:"5",h:"Final Pitch",p:"Final PPT goes in on the standard MEDVERSE template. Teams pitch to judges, then take questions.",fix:<><b style={{color:"var(--coral)"}}>Fix:</b> template deviations cost pitch-clarity points, not disqualification — the idea is still judged on merit.</>},
             ].map((item,i)=>(
@@ -167,37 +167,7 @@ export default function Home() {
       </section>
 
       {/* KIT DEMO */}
-      <section id="kit" style={{padding:"88px 0"}}>
-        <div className="wrap">
-          <div style={{background:"var(--teal-deep)",color:"var(--white)",borderRadius:"10px",padding:"44px 36px"}}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:"20px",flexWrap:"wrap",marginBottom:"28px"}}>
-              <div>
-                <h2 style={{fontFamily:"var(--display)",color:"var(--white)",marginBottom:"8px",fontSize:"clamp(1.8rem,3.4vw,2.6rem)",fontWeight:600}}>See the fairness mechanism</h2>
-                <p style={{color:"#B9D8CF",maxWidth:"52ch",fontSize:"0.95rem"}}>This is the same random draw every real team gets — disease, technology, budget, and constraint pulled from a sealed pool. Nobody chooses their kit.</p>
-              </div>
-              <button onClick={drawKit} disabled={drawing} style={{fontFamily:"var(--mono)",textTransform:"uppercase",fontSize:"0.8rem",letterSpacing:"0.03em",background:"var(--amber)",color:"var(--teal-deep)",border:"none",padding:"14px 22px",borderRadius:"3px",cursor:"pointer",whiteSpace:"nowrap",opacity:drawing?0.6:1,transition:"transform 0.15s"}}>
-                {drawing ? "Drawing…" : "Draw a Sample Kit"}
-              </button>
-            </div>
-            <div style={{background:"#0D2F2B",border:"1px solid #2A5F55",borderRadius:"8px",padding:"26px",display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"22px"}}>
-              {[
-                {label:"Problem",val:kit?.disease ?? "—"},
-                {label:"Assigned Tech",val:kit?.tech ?? "—"},
-                {label:"Budget",val:kit?.budget ?? "—"},
-                {label:"Constraint",val:kit?.constraint ?? "—"},
-              ].map(f=>(
-                <div key={f.label}>
-                  <div style={{fontFamily:"var(--mono)",fontSize:"0.68rem",textTransform:"uppercase",color:"#7FA79B",marginBottom:"6px"}}>{f.label}</div>
-                  <div style={{fontFamily:"var(--display)",fontSize:"1.02rem",lineHeight:1.3}}>{f.val}</div>
-                </div>
-              ))}
-            </div>
-            <div style={{fontFamily:"var(--mono)",fontSize:"0.72rem",color:"#5E8A80",marginTop:"22px",letterSpacing:"0.04em"}}>
-              {kit ? `KIT DRAWN — ${new Date().toLocaleTimeString()}` : "KIT ID — draw to generate"}
-            </div>
-          </div>
-        </div>
-      </section>
+      
 
       {/* RULES */}
       <section id="rules" style={{padding:"88px 0"}}>
