@@ -25,7 +25,7 @@ export default function ParticipantPortal() {
         }
         setMe(d);
         if (d.kit) setKitRevealed(true);
-        fetch("/api/team/history").then(r => r.json()).then(hd => setHistory(hd));
+        fetch("/api/team/history").then(r => r.json()).then(hd => setHistory(hd.submissions || []));
       }
     });
   }, []);
@@ -83,7 +83,7 @@ export default function ParticipantPortal() {
     } else {
       setSubmitOk(true);
       setContent("");
-      fetch('/api/team/history').then(r => r.json()).then(hd => setHistory(hd));
+      fetch('/api/team/history').then(r => r.json()).then(hd => setHistory(hd.submissions || []));
     }
     setLoading(false);
   }
