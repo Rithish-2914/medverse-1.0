@@ -78,9 +78,9 @@ export default function RegisterPage() {
                 <div><label style={S.label}>Team Name</label><input style={S.input} value={teamName} onChange={e=>setTeamName(e.target.value)} placeholder="E.g. Innovators" /></div>
                 <div><label style={S.label}>Track</label>
                   <select style={S.input} value={track} onChange={e=>setTrack(e.target.value)}>
-                    <option value="A">Track A - Digital Health & AI</option>
-                    <option value="B">Track B - MedTech Hardware</option>
-                    <option value="C">Track C - Care Delivery & Diagnostics</option>
+                    <option value="A">Track A - AI</option>
+                    <option value="B">Track B - Medical Devices & Hardware</option>
+                    <option value="C">Track C - Healthcare Innovation</option>
                   </select>
                 </div>
               </div>
@@ -144,4 +144,5 @@ export default function RegisterPage() {
     </>
   );
 }
+
 
