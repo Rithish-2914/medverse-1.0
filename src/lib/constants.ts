@@ -1,6 +1,6 @@
 ﻿import { problems } from '@/data/problems';
 
-export const ROUNDS = ["Ideation", "Mini Review", "Twist Round", "Final Review", "Final Pitch"];
+export const ROUNDS = ["Ideation", "Mini Review", "Mid-Point Review", "Final Review", "Final Pitch"];
 
 export function maskedRounds(started: number[]) {
   return ROUNDS.map((r, i) => started.includes(i) ? r : "???");
@@ -31,4 +31,5 @@ export function drawKit(track: 'A'|'B'|'C') {
 }
 
 export const FINAL_ROUND_IDX = ROUNDS.length - 1;
+
 
