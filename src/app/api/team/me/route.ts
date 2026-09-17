@@ -24,11 +24,18 @@ export async function GET(req: NextRequest) {
   const twistActive = twistRows[0]?.text === 'TWIST_PHASE_ACTIVE';
   
   let specificTwist = null;
-  if (kit && twistActive) {
+  let imageLink = "";
+  let videoLink = "";
+
+  if (kit) {
     const pId = kit.disease.split(':')[0];
     const p = problems.find(x => x.id === pId);
     if (p) {
-      specificTwist = { limitation: p.twistLimitation, budget: 'Rs. ' + p.twistBudget.toLocaleString() };
+      imageLink = p.imageLink || "";
+      videoLink = p.videoLink || "";
+      if (twistActive) {
+        specificTwist = { limitation: p.twistLimitation, budget: 'Rs. ' + p.twistBudget.toLocaleString() };
+      }
     }
   }
 
@@ -42,6 +49,8 @@ export async function GET(req: NextRequest) {
       budget: kit.budget,
       constraint: kit.constraint_text,
       drawnAt: kit.drawn_at,
+      imageLink,
+      videoLink,
       twist: specificTwist
     } : null,
     roundState: state ? {

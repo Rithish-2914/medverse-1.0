@@ -1,65 +1,49 @@
 ﻿"use client";
-import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
-import Nav from "@/components/Nav";
+import { useState, useEffect } from 'react';
+import Nav from '@/components/Nav';
 
-export default function ParticipantPage() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [me, setMe] = useState<any>(null);
-  const [history, setHistory] = useState<any[]>([]);
+export default function ParticipantPortal() {
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [loginErr, setLoginErr] = useState("");
+  const [me, setMe] = useState<any>(null);
   const [content, setContent] = useState("");
   const [submitErr, setSubmitErr] = useState("");
   const [submitOk, setSubmitOk] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [history, setHistory] = useState<any[]>([]);
   const [kitRevealed, setKitRevealed] = useState(false);
-  const [checking, setChecking] = useState(true);
-
-  const S = {
-    wrap: { maxWidth:"1180px", margin:"0 auto", padding:"0 32px" },
-    sectionHead: { maxWidth:"640px", marginBottom:"52px" },
-    tag: { fontFamily:"var(--mono)", fontSize:"0.75rem", textTransform:"uppercase" as const, letterSpacing:"0.08em", color:"var(--coral)", marginBottom:"12px", display:"block" },
-    h2: { fontFamily:"var(--display)", fontWeight:600, fontSize:"clamp(1.8rem,3.4vw,2.6rem)", letterSpacing:"-0.01em", marginBottom:"14px" },
-    input: { width:"100%", fontFamily:"var(--mono)", fontSize:"0.9rem", padding:"13px 16px", border:"1px solid var(--line)", borderRadius:"3px", background:"var(--paper)", color:"var(--ink)", minWidth:"220px" },
-    btn: { fontFamily:"var(--mono)", textTransform:"uppercase" as const, fontSize:"0.8rem", letterSpacing:"0.03em", background:"var(--coral)", color:"#fff", border:"none", padding:"14px 22px", borderRadius:"3px", cursor:"pointer", whiteSpace:"nowrap" as const, transition:"transform 0.15s" },
-    shell: { background:"var(--surface)", border:"1px solid var(--line)", borderRadius:"10px", overflow:"hidden" },
-    loginBox: { padding:"44px 36px", textAlign:"center" as const },
-    pcard: { background:"var(--paper)", border:"1px solid var(--line)", borderRadius:"8px", padding:"22px" },
-    h4: { fontFamily:"var(--display)", fontSize:"1rem", marginBottom:"14px" },
-    badge: (status:string) => {
-      let bg = "rgba(226,147,59,0.18)", col = "var(--amber)";
-      if(status==="accepted") { bg = "rgba(63,203,224,0.18)"; col = "var(--teal)"; }
-      if(status==="rejected") { bg = "rgba(198,80,63,0.18)"; col = "var(--coral)"; }
-      return { display:"inline-block", fontFamily:"var(--mono)", fontSize:"0.68rem", textTransform:"uppercase" as const, padding:"3px 9px", borderRadius:"20px", letterSpacing:"0.03em", background:bg, color:col };
-    }
-  };
-
-  const loadData = useCallback(async () => {
-    const [meRes, histRes] = await Promise.all([fetch("/api/team/me"), fetch("/api/team/history")]);
-    if (meRes.ok) {
-      const d = await meRes.json(); setMe(d); setLoggedIn(true);
-      if (d.kit) setKitRevealed(true);
-    }
-    if (histRes.ok) { const h = await histRes.json(); setHistory(h.submissions || []); }
-  }, []);
+  const [modalMedia, setModalMedia] = useState<{type: 'image' | 'video', url: string} | null>(null);
 
   useEffect(() => {
-    (async () => { await loadData(); setChecking(false); })();
-  }, [loadData]);
+    fetch('/api/team/me').then(r => r.json()).then(d => {
+      if (!d.error) {
+        setMe(d);
+        if (d.kit) setKitRevealed(true);
+        fetch('/api/team/history').then(r => r.json()).then(hd => setHistory(hd));
+      }
+    });
+  }, []);
 
   async function login() {
-    setLoading(true); setLoginErr("");
-    const res = await fetch("/api/auth/team/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code: code.toUpperCase(), password }) });
-    const data = await res.json();
-    if (!res.ok) { setLoginErr(data.error || "Login failed"); setLoading(false); return; }
-    await loadData(); setLoading(false);
+    if (!code || !password || loading) return;
+    setLoading(true);
+    const res = await fetch('/api/auth/login', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ code, password, role: 'team' })
+    });
+    if (!res.ok) {
+      setLoginErr("Invalid code or password.");
+    } else {
+      setLoginErr("");
+      window.location.reload();
+    }
+    setLoading(false);
   }
 
   async function logout() {
-    await fetch("/api/auth/team/logout", { method: "POST" });
-    setLoggedIn(false); setMe(null); setHistory([]);
+    await fetch('/api/auth/logout', { method: 'POST' });
+    window.location.reload();
   }
 
   async function drawKit() {
@@ -80,24 +64,45 @@ export default function ParticipantPage() {
   }
 
   async function submit() {
-    setLoading(true); setSubmitErr(""); setSubmitOk(false);
-    const res = await fetch("/api/team/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content }) });
-    const data = await res.json();
-    if (!res.ok) { setSubmitErr(data.error || "Submit failed"); setLoading(false); return; }
-    setSubmitOk(true); setContent(""); await loadData(); setLoading(false);
+    if (loading || content.length < 10) return;
+    setLoading(true);
+    setSubmitErr("");
+    setSubmitOk(false);
+    const res = await fetch('/api/team/submit', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ content })
+    });
+    if (!res.ok) {
+      const e = await res.json();
+      setSubmitErr(e.error || "Submission failed.");
+    } else {
+      setSubmitOk(true);
+      setContent("");
+      fetch('/api/team/history').then(r => r.json()).then(hd => setHistory(hd));
+    }
+    setLoading(false);
   }
 
-  if (checking) return <div style={{minHeight:"100vh", background:"var(--paper)"}} />;
+  const S = {
+    wrap: { maxWidth: "900px", margin: "0 auto", padding: "0 20px" },
+    shell: { background: "var(--surface)", border: "1px solid var(--line)", borderRadius: "8px", overflow: "hidden" },
+    loginBox: { padding: "40px", textAlign: "center" as const },
+    input: { padding: "10px 14px", borderRadius: "4px", border: "1px solid var(--line)", background: "var(--paper-2)", color: "var(--ink)", fontFamily: "var(--mono)", fontSize: "0.9rem" },
+    btn: { padding: "10px 20px", borderRadius: "4px", border: "none", background: "var(--ink)", color: "var(--paper)", fontFamily: "var(--display)", fontWeight: 600, cursor: "pointer" },
+    badge: (status: string) => ({ display: "inline-block", padding: "2px 8px", borderRadius: "20px", fontSize: "0.65rem", textTransform: "uppercase" as const, background: status==="active" ? "rgba(63,203,224,0.15)" : status==="rejected" ? "rgba(226,108,93,0.15)" : "var(--paper-2)", color: status==="active" ? "var(--teal)" : status==="rejected" ? "var(--coral)" : "var(--ink)" }),
+    h4: { fontFamily: "var(--display)", fontWeight: 600, fontSize: "1rem", color: "var(--teal)", marginBottom: "16px", textTransform: "uppercase" as const, letterSpacing: "0.05em" },
+    pcard: { background: "var(--paper)", border: "1px solid var(--line)", borderRadius: "6px", padding: "20px" }
+  };
 
-  if (!loggedIn) return (
+  if (!me) return (
     <>
       <Nav active="participant" />
-      <section style={{padding:"88px 0", minHeight:"calc(100vh - 160px)"}}>
+      <section style={{padding:"88px 0"}}>
         <div style={S.wrap}>
-          <div style={S.sectionHead}>
-            <span style={S.tag}>Authenticated — participants only</span>
-            <h2 style={S.h2}>Participant Portal</h2>
-            <p style={{color:"#C7DEE1", fontSize:"1.02rem"}}>Your team code and password, set at registration. Wrong credentials are rejected — this is real login.</p>
+          
+          <div style={{marginBottom: "40px"}}>
+            <h2 style={{fontFamily:"var(--display)", fontWeight:600, fontSize:"1.8rem", marginBottom:"12px"}}>Participant Portal</h2>
+            <p style={{fontSize:"1rem", color:"#8FA8AD"}}>Access your assigned problem kit and submit your solutions for each round.</p>
           </div>
           
           <div style={S.shell}>
@@ -125,16 +130,26 @@ export default function ParticipantPage() {
   return (
     <>
       <Nav active="participant" />
+      
+      {modalMedia && (
+        <div style={{position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.85)', zIndex: 9999, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '40px'}} onClick={() => setModalMedia(null)}>
+          <div style={{position: 'relative', width: '100%', maxWidth: '900px', height: '100%', maxHeight: '600px', background: '#000', borderRadius: '8px', overflow: 'hidden'}} onClick={e => e.stopPropagation()}>
+            <button onClick={() => setModalMedia(null)} style={{position: 'absolute', top: '10px', right: '10px', background: 'var(--coral)', color: '#fff', border: 'none', borderRadius: '50%', width: '30px', height: '30px', cursor: 'pointer', zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 'bold'}}>X</button>
+            <iframe src={modalMedia.url} width="100%" height="100%" frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen></iframe>
+          </div>
+        </div>
+      )}
+
       <section style={{padding:"88px 0"}}>
         <div style={S.wrap}>
           
           <div style={{...S.shell, marginBottom:"40px"}}>
             <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:"14px", padding:"20px 32px", background:"var(--paper-2)", borderBottom:"1px solid var(--line)"}}>
-              <div style={{fontFamily:"var(--display)", fontWeight:600, fontSize:"1.05rem"}}>{me.team.name} <span style={{opacity:0.5, marginLeft:"8px", fontSize:"0.9rem"}}>{me.team.code} · Track {me.team.track}</span></div>
+              <div style={{fontFamily:"var(--display)", fontWeight:600, fontSize:"1.05rem"}}>{me.team.name} <span style={{opacity:0.5, marginLeft:"8px", fontSize:"0.9rem"}}>{me.team.code} &middot; Track {me.team.track}</span></div>
               <div style={{fontFamily:"var(--mono)", fontSize:"0.8rem", textAlign:"right"}}>
                 <div>Current round</div>
                 <div style={{color:"var(--coral)", fontWeight:500}}>
-                  {me.roundState?.roundName ?? "—"} <span style={S.badge(me.roundState?.status==="active"?"pending":"rejected")}>{me.roundState?.status==="active"?"LIVE":me.roundState?.status==="ended"?"ENDED":"STANDBY"}</span>
+                  {me.roundState?.roundName ?? "-"} <span style={S.badge(me.roundState?.status==="active"?"pending":"rejected")}>{me.roundState?.status==="active"?"LIVE":me.roundState?.status==="ended"?"ENDED":"STANDBY"}</span>
                 </div>
               </div>
               <button onClick={logout} style={{fontFamily:"var(--mono)", fontSize:"0.75rem", textTransform:"uppercase", background:"transparent", color:"var(--ink)", border:"1px solid var(--line)", padding:"8px 16px", borderRadius:"3px", cursor:"pointer"}}>Log out</button>
@@ -157,17 +172,32 @@ export default function ParticipantPage() {
                 ) : !kitRevealed ? (
                   <button onClick={drawKit} style={{...S.btn, background:"var(--teal)", color:"var(--teal-deep)"}}>Reveal Kit</button>
                 ) : (
-                  <div style={{fontFamily:"var(--mono)", fontSize:"0.82rem", lineHeight:1.9, color:"#D3E8EA"}}>
-                    <b style={{color:"var(--ink)",display:"inline-block",width:"100px"}}>Problem:</b>{me.kit.disease}<br/>
-                    <b style={{color:"var(--ink)",display:"inline-block",width:"100px"}}>Patient:</b>{me.kit.patient}<br/>
-                    <b style={{color:"var(--ink)",display:"inline-block",width:"100px"}}>Tech:</b>{me.kit.tech}<br/>
-                    <b style={{color:"var(--ink)",display:"inline-block",width:"100px"}}>Budget:</b>{me.kit.budget}<br/>
-                    <b style={{color:"var(--ink)",display:"inline-block",width:"100px"}}>Constraint:</b><span style={{color:"var(--coral)"}}>{me.kit.constraint}</span><br/>
+                  <div>
+                    <div style={{marginBottom: "16px"}}>
+                      <div style={{fontFamily:"var(--display)", fontSize:"1.1rem", fontWeight:600, color:"var(--ink)", marginBottom:"12px"}}>{me.kit.disease}</div>
+                      
+                      <div style={{display:"flex", flexDirection:"column", gap:"8px"}}>
+                        <button 
+                          onClick={() => setModalMedia({type: 'image', url: me.kit.imageLink})} 
+                          style={{...S.btn, background:"var(--ink)", color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", gap:"8px", padding:"12px"}}
+                        >
+                          <span style={{fontSize:"1.2rem"}}>🖼️</span> View Problem Brief
+                        </button>
+                        
+                        <button 
+                          onClick={() => setModalMedia({type: 'video', url: me.kit.videoLink})} 
+                          style={{...S.btn, background:"var(--teal)", color:"var(--teal-deep)", display:"flex", alignItems:"center", justifyContent:"center", gap:"8px", padding:"12px"}}
+                        >
+                          <span style={{fontSize:"1.2rem"}}>🎥</span> Watch Patient Story
+                        </button>
+                      </div>
+                    </div>
+
                     {me.kit.twist && (
-                      <div style={{marginTop:"16px", padding:"12px", background:"var(--paper-2)", border:"1px solid var(--coral)", borderRadius:"6px"}}>
-                        <b style={{color:"var(--coral)", display:"block", marginBottom:"6px"}}>⚠️ TWIST REVEALED</b>
-                        <b style={{color:"var(--ink)", display:"inline-block", width:"100px"}}>New Limitation:</b> <span style={{color:"var(--coral)"}}>{me.kit.twist.limitation}</span><br/>
-                        <b style={{color:"var(--ink)", display:"inline-block", width:"100px"}}>New Budget:</b> <span style={{fontFamily:"var(--mono)", color:"var(--teal-deep)", fontWeight:600}}>{me.kit.twist.budget}</span>
+                      <div style={{marginTop:"20px", padding:"16px", background:"var(--paper-2)", border:"1px solid var(--coral)", borderRadius:"6px"}}>
+                        <b style={{color:"var(--coral)", display:"block", marginBottom:"6px", textTransform:"uppercase", fontFamily:"var(--mono)", fontSize:"0.8rem"}}>⚠️ TWIST REVEALED</b>
+                        <b style={{color:"var(--ink)", display:"inline-block", width:"100px", fontSize:"0.85rem"}}>New Limitation:</b> <span style={{color:"var(--coral)", fontSize:"0.85rem"}}>{me.kit.twist.limitation}</span><br/>
+                        <b style={{color:"var(--ink)", display:"inline-block", width:"100px", fontSize:"0.85rem"}}>New Budget:</b> <span style={{fontFamily:"var(--mono)", color:"var(--teal-deep)", fontWeight:600, fontSize:"0.85rem"}}>{me.kit.twist.budget}</span>
                       </div>
                     )}
                   </div>
@@ -178,7 +208,7 @@ export default function ParticipantPage() {
                 <h4 style={S.h4}>Submit this round</h4>
                 {accepted && (
                   <div style={{background:"rgba(63,203,224,0.12)", borderLeft:"2px solid var(--teal)", padding:"10px 14px", borderRadius:"0 4px 4px 0", marginBottom:"12px", color:"var(--ink)", fontFamily:"var(--mono)", fontSize:"0.72rem"}}>
-                    This round is locked — a judge has accepted your submission. Wait for the next round.
+                    This round is locked - a judge has accepted your submission. Wait for the next round.
                   </div>
                 )}
                 {!canSubmit && !accepted && (
@@ -190,7 +220,7 @@ export default function ParticipantPage() {
                   <div>
                     <textarea style={{width:"100%", fontFamily:"var(--body)", fontSize:"0.92rem", padding:"12px", border:"1px solid var(--line)", borderRadius:"4px", minHeight:"100px", resize:"vertical", background:"var(--surface)", color:"var(--ink)"}} placeholder="Describe your solution for this round..." value={content} onChange={e=>setContent(e.target.value)} />
                     <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginTop:"12px", gap:"10px", flexWrap:"wrap"}}>
-                      <span style={{fontFamily:"var(--mono)", fontSize:"0.72rem", color:"#8FA8AD"}}>{submitErr ? <span style={{color:"var(--coral)"}}>{submitErr}</span> : submitOk ? <span style={{color:"var(--teal)"}}>Submitted!</span> : "Judges review every submission — resubmit freely."}</span>
+                      <span style={{fontFamily:"var(--mono)", fontSize:"0.72rem", color:"#8FA8AD"}}>{submitErr ? <span style={{color:"var(--coral)"}}>{submitErr}</span> : submitOk ? <span style={{color:"var(--teal)"}}>Submitted!</span> : "Judges review every submission - resubmit freely."}</span>
                       <button onClick={submit} disabled={loading||content.length<10} style={{...S.btn, background:"var(--teal)", color:"var(--teal-deep)", fontWeight:600, opacity:(loading||content.length<10)?0.5:1}}>{loading?"Submitting...":"Submit"}</button>
                     </div>
                   </div>
@@ -207,7 +237,7 @@ export default function ParticipantPage() {
                 history.map(s => (
                   <div key={s.id} style={{padding:"12px 0", borderBottom:"1px dashed var(--line)"}}>
                     <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"6px"}}>
-                      <span style={{fontFamily:"var(--mono)", fontSize:"0.78rem", color:"#C7DEE1"}}>Round {s.round_idx+1} · {new Date(s.created_at).toLocaleString()}</span>
+                      <span style={{fontFamily:"var(--mono)", fontSize:"0.78rem", color:"#C7DEE1"}}>Round {s.round_idx+1} &middot; {new Date(s.created_at).toLocaleString()}</span>
                       <span style={S.badge(s.status)}>{s.status}</span>
                     </div>
                     {s.content && <p style={{fontSize:"0.92rem", color:"var(--ink)", whiteSpace:"pre-wrap"}}>{s.content}</p>}
@@ -224,5 +254,3 @@ export default function ParticipantPage() {
     </>
   );
 }
-
-
