@@ -42,13 +42,10 @@ export default function RegisterPage() {
     if(leaderName && leaderReg) members.push({name:leaderName, regNo:leaderReg, is_lead:true});
     if(m2Name && m2Reg) members.push({name:m2Name, regNo:m2Reg, is_lead:false});
     if(m3Name && m3Reg) members.push({name:m3Name, regNo:m3Reg, is_lead:false});
-    if(m4Name && m4Reg) members.push({name:m4Name, regNo:m4Reg, is_lead:false});
-    if(m5Name && m5Reg) members.push({name:m5Name, regNo:m5Reg, is_lead:false});
+    
+    
 
-    if(members.length < 3) {
-      setErr("Minimum 3 members required.");
-      setLoading(false); return;
-    }
+    if(members.length < 1) { setErr("Team leader is required."); setLoading(false); return; }
 
     const res = await fetch("/api/auth/register", {
       method:"POST",
@@ -58,7 +55,7 @@ export default function RegisterPage() {
     const data = await res.json();
     if(!res.ok) { setErr(data.error || "Registration failed"); setLoading(false); return; }
     
-    setSuccessCode(data.teamCode);
+    setSuccessCode(data.code);
     setStep(3);
     setLoading(false);
   }
@@ -71,7 +68,7 @@ export default function RegisterPage() {
           <div style={S.sectionHead}>
             <span style={S.tag}>Team Registration</span>
             <h2 style={S.h2}>Enter the MEDVERSE</h2>
-            <p style={{color:"#C7DEE1", fontSize:"1.02rem"}}>Register your team of 3-5 members. Choose your track carefully — it dictates the kind of kits you will draw.</p>
+            <p style={{color:"#C7DEE1", fontSize:"1.02rem"}}>Register your team of 1-3 members. Choose your track carefully — it dictates the kind of kits you will draw.</p>
           </div>
 
           {step === 1 && (
@@ -100,7 +97,7 @@ export default function RegisterPage() {
 
           {step === 2 && (
             <div style={{...S.card, maxWidth:"700px"}}>
-              <h3 style={{fontFamily:"var(--display)", fontSize:"1.15rem", marginBottom:"24px"}}>Step 2: Members (3-5 required)</h3>
+              <h3 style={{fontFamily:"var(--display)", fontSize:"1.15rem", marginBottom:"24px"}}>Step 2: Members (1-3 members)</h3>
               
               <div style={{marginBottom:"20px", padding:"16px", background:"var(--paper-2)", borderRadius:"6px"}}>
                 <label style={{...S.label, color:"var(--teal)"}}>Team Leader (Required)</label>
@@ -111,10 +108,10 @@ export default function RegisterPage() {
               </div>
               
               {[
-                {lbl:"Member 2 (Required)", n:m2Name, sn:setM2Name, r:m2Reg, sr:setM2Reg},
-                {lbl:"Member 3 (Required)", n:m3Name, sn:setM3Name, r:m3Reg, sr:setM3Reg},
-                {lbl:"Member 4 (Optional)", n:m4Name, sn:setM4Name, r:m4Reg, sr:setM4Reg},
-                {lbl:"Member 5 (Optional)", n:m5Name, sn:setM5Name, r:m5Reg, sr:setM5Reg},
+                {lbl:"Member 2 (Optional)", n:m2Name, sn:setM2Name, r:m2Reg, sr:setM2Reg},
+                {lbl:"Member 3 (Optional)", n:m3Name, sn:setM3Name, r:m3Reg, sr:setM3Reg},
+                
+                
               ].map((m,i)=>(
                 <div key={i} style={{marginBottom:"12px"}}>
                   <label style={S.label}>{m.lbl}</label>
@@ -147,3 +144,4 @@ export default function RegisterPage() {
     </>
   );
 }
+
