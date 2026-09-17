@@ -33,7 +33,7 @@ export default function ParticipantPortal() {
   async function login() {
     if (!code || !password || loading) return;
     setLoading(true);
-    const res = await fetch('/api/auth/login', {
+    const res = await fetch('/api/auth/team/login', {
       method: 'POST', headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ code, password, role: 'team' })
     });
@@ -47,7 +47,7 @@ export default function ParticipantPortal() {
   }
 
   async function logout() {
-    await fetch('/api/auth/logout', { method: 'POST' });
+    await fetch('/api/auth/team/logout', { method: 'POST' });
     window.location.reload();
   }
 
