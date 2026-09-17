@@ -182,7 +182,7 @@ export default function ParticipantPortal() {
                       <div style={{display:"flex", flexDirection:"column", gap:"8px"}}>
                         <button 
                           onClick={() => setModalMedia({type: 'image', url: me.kit.imageLink})} 
-                          style={{...S.btn, background:"var(--ink)", color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", gap:"8px", padding:"12px"}}
+                          style={{...S.btn, background:"#fff", color:"#000", border:"1px solid var(--line)", display:"flex", alignItems:"center", justifyContent:"center", gap:"8px", padding:"12px"}}
                         >
                           <span style={{fontSize:"1.2rem"}}>🖼️</span> View Problem Brief
                         </button>
