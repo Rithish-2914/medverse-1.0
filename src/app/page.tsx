@@ -6,7 +6,7 @@ import Nav from "@/components/Nav";
 const s: React.CSSProperties = {};
 const ROUNDS = ["Ideation","Mini Review","Mid-Point Review","Final Review","Final Pitch"];
 
-interface PublicState { currentRoundIdx:number; status:string; roundName:string; totalRounds:number; revealedMid-Point Review:string|null; }
+interface PublicState { currentRoundIdx:number; status:string; roundName:string; totalRounds:number; revealedMidPoint:string|null; }
 const KITS_A = [
   {disease:"Type 2 Diabetes (rural)",tech:"SMS-based chatbot",budget:"₹4,000",constraint:"No smartphone required"},
   {disease:"Hypertension screening",tech:"TinyML on microcontroller",budget:"₹6,500",constraint:"Battery-only power"},
@@ -102,7 +102,7 @@ export default function Home() {
                       <div key={i} title={r} style={{flex:1,height:"3px",borderRadius:"2px",background:i<state.currentRoundIdx?"var(--teal)":i===state.currentRoundIdx?(state.status==="active"?"var(--amber)":"var(--coral)"):"rgba(255,255,255,0.1)"}}/>
                     ))}
                   </div>
-                  {state.revealedMid-Point Review && <div style={{marginTop:"10px",padding:"8px 10px",background:"rgba(242,168,62,0.12)",borderLeft:"2px solid var(--amber)",borderRadius:"0 4px 4px 0",fontFamily:"var(--mono)",fontSize:"0.72rem",color:"var(--amber)"}}>MID-POINT REVIEW: {state.revealedMid-Point Review}</div>}
+                  {state.revealedMidPoint && <div style={{marginTop:"10px",padding:"8px 10px",background:"rgba(242,168,62,0.12)",borderLeft:"2px solid var(--amber)",borderRadius:"0 4px 4px 0",fontFamily:"var(--mono)",fontSize:"0.72rem",color:"var(--amber)"}}>MID-POINT REVIEW: {state.revealedMidPoint}</div>}
                 </div>
               )}
               <div style={{fontFamily:"var(--mono)",color:"#7FA79B",fontSize:"0.7rem",marginTop:"10px"}}>IDEATION → MINI REVIEW → MID-POINT REVIEW → FINAL REVIEW → PITCH</div>
