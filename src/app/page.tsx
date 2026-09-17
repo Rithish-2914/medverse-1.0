@@ -202,7 +202,7 @@ export default function Home() {
         <div className="wrap">
           <div style={S.sectionHead}>
             <span style={S.tag}>Published before the event starts</span>
-            <h2 style={S.h2}>How every round is scored</h2>
+            <h2 style={S.h2}>How You Are Judged</h2>
           </div>
           <div style={{overflowX:"auto"}}>
             <table style={{width:"100%",borderCollapse:"collapse",fontSize:"0.95rem"}}>
