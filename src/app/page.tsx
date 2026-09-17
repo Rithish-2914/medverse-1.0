@@ -173,7 +173,7 @@ export default function Home() {
       <section id="rules" style={{padding:"88px 0"}}>
         <div className="wrap">
           <div style={S.sectionHead}>
-            <span style={S.tag}>Written down before Round 1, not decided after</span>
+            
             <h2 style={S.h2}>Fair play, spelled out</h2>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"22px"}}>
