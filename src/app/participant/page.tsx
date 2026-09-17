@@ -128,7 +128,7 @@ export default function ParticipantPortal() {
   );
 
   const ROUNDS = ["Ideation","Mini Review", me?.kit?.twist ? "Twist Round" : "Mid-Point Review", "Final Review","Final Pitch"];
-  const canSubmit = me?.roundState?.status === "active" && (me?.roundState?.currentRoundIdx ?? 99) < 4;
+  const canSubmit = me?.roundState?.status === "active" && (me?.roundState?.currentRoundIdx ?? 99) <= 4;
   const thisRound = me?.roundState?.currentRoundIdx ?? 0;
   const accepted = history.some(s => s.round_idx === thisRound && s.status === "accepted");
 
