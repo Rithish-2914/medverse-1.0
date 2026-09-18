@@ -13,7 +13,7 @@ export default function ParticipantPortal() {
   const [submitOk, setSubmitOk] = useState(false);
   const [history, setHistory] = useState<any[]>([]);
   const [kitRevealed, setKitRevealed] = useState(false);
-  const [modalMedia, setModalMedia] = useState<{type: 'image' | 'video', url: string} | null>(null);
+  const [modalMedia, setModalMedia] = useState<{type: 'doc', url: string} | null>(null);
 
   useEffect(() => {
     fetch("/api/team/me").then(r => r.json()).then(async d => {
@@ -181,18 +181,13 @@ export default function ParticipantPortal() {
                       
                       <div style={{display:"flex", flexDirection:"column", gap:"8px"}}>
                         <button 
-                          onClick={() => setModalMedia({type: 'image', url: me.kit.imageLink})} 
+                          onClick={() => setModalMedia({type: 'doc', url: me.kit.docLink})} 
                           style={{...S.btn, background:"#fff", color:"#000", border:"1px solid var(--line)", display:"flex", alignItems:"center", justifyContent:"center", gap:"8px", padding:"12px"}}
                         >
                           <span style={{fontSize:"1.2rem"}}>🖼️</span> View Problem Brief
                         </button>
                         
-                        <button 
-                          onClick={() => setModalMedia({type: 'video', url: me.kit.videoLink})} 
-                          style={{...S.btn, background:"var(--teal)", color:"var(--teal-deep)", display:"flex", alignItems:"center", justifyContent:"center", gap:"8px", padding:"12px"}}
-                        >
-                          <span style={{fontSize:"1.2rem"}}>🎥</span> Watch Patient Story
-                        </button>
+                        
                       </div>
                     </div>
 

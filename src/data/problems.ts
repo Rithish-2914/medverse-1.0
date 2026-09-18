@@ -1,8 +1,7 @@
 export const problems = [
   {
     id: "AI-01",
-    imageLink: "",
-    videoLink: "",
+    docLink: "",
     track: "AI",
     title: "Autoimmune Flare",
     story: "A 24-year-old patient with an autoimmune disease experiences unpredictable flare-ups. Subtle changes in sleep, fatigue, pain and activity often appear before she feels significantly worse.",
@@ -23,8 +22,7 @@ export const problems = [
   },
   {
     id: "AI-02",
-    imageLink: "",
-    videoLink: "",
+    docLink: "",
     track: "AI",
     title: "The Disease Nobody Can Name",
     story: "A 16-year-old has spent years visiting doctors because of several unusual symptoms that individually appear unrelated.",
@@ -45,8 +43,7 @@ export const problems = [
   },
   {
     id: "AI-03",
-    imageLink: "",
-    videoLink: "",
+    docLink: "",
     track: "AI",
     title: "Antibiotic That Stops Working",
     story: "A patient develops a serious bacterial infection. The doctor needs to choose treatment quickly, but the hospital has incomplete historical antibiotic-resistance data.",
@@ -67,8 +64,7 @@ export const problems = [
   },
   {
     id: "AI-04",
-    imageLink: "",
-    videoLink: "",
+    docLink: "",
     track: "AI",
     title: "Seven Medicines, One Patient",
     story: "A 70-year-old takes medicines prescribed by three doctors. Individually they appear appropriate, but the combination may create interactions or duplication.",
@@ -89,8 +85,7 @@ export const problems = [
   },
   {
     id: "AI-05",
-    imageLink: "",
-    videoLink: "",
+    docLink: "",
     track: "AI",
     title: "When the Voice Changes",
     story: "A young person experiences changes in mood and daily functioning but does not want to repeatedly complete mental-health questionnaires. The doctor has been noticing changes in speech patterns in the patient.",
@@ -111,8 +106,7 @@ export const problems = [
   },
   {
     id: "DEVICE-01",
-    imageLink: "",
-    videoLink: "",
+    docLink: "",
     track: "Medical Devices & Hardware",
     title: "Ulcer Before It Appears",
     story: "A bedridden patient spends most of the day in the same position. By the time visible skin damage appears, tissue injury may already be significant.",
@@ -133,8 +127,7 @@ export const problems = [
   },
   {
     id: "DEVICE-02",
-    imageLink: "",
-    videoLink: "",
+    docLink: "",
     track: "Medical Devices & Hardware",
     title: "The Fistula That Changed",
     story: "A dialysis patient depends on an AV fistula for regular treatment. Changes in blood flow can indicate serious complications.",
@@ -156,8 +149,7 @@ export const problems = [
   },
   {
     id: "DEVICE-03",
-    imageLink: "",
-    videoLink: "",
+    docLink: "",
     track: "Medical Devices & Hardware",
     title: "The Hidden Swallow",
     story: "After a stroke, a patient appears to eat normally but has difficulty swallowing safely. Small amounts of food or liquid may enter the airway without obvious symptoms.",
@@ -178,8 +170,7 @@ export const problems = [
   },
   {
     id: "DEVICE-04",
-    imageLink: "",
-    videoLink: "",
+    docLink: "",
     track: "Medical Devices & Hardware",
     title: "The Prosthesis That Doesn't Fit Tomorrow",
     story: "A prosthetic limb fits well in the morning but becomes uncomfortable later because pressure and tissue volume change throughout the day.",
@@ -201,8 +192,7 @@ export const problems = [
   },
   {
     id: "DEVICE-05",
-    imageLink: "",
-    videoLink: "",
+    docLink: "",
     track: "Medical Devices & Hardware",
     title: "Keeping a Newborn Warm",
     story: "A premature newborn in a resource-limited centre struggles to maintain body temperature. Nurses cannot continuously monitor the baby.",
@@ -223,8 +213,7 @@ export const problems = [
   },
   {
     id: "INNOVATION-01",
-    imageLink: "",
-    videoLink: "",
+    docLink: "",
     track: "Healthcare Innovation",
     title: "The Implant Bacteria Love",
     story: "A patient receives an implant, but bacteria attach to its surface and form a difficult-to-treat biofilm.",
@@ -245,8 +234,7 @@ export const problems = [
   },
   {
     id: "INNOVATION-02",
-    imageLink: "",
-    videoLink: "",
+    docLink: "",
     track: "Healthcare Innovation",
     title: "The Implant the Body Rejects",
     story: "A patient's implant performs its mechanical function, but the body develops an excessive foreign-body response around it.",
@@ -267,8 +255,7 @@ export const problems = [
   },
   {
     id: "INNOVATION-03",
-    imageLink: "",
-    videoLink: "",
+    docLink: "",
     track: "Healthcare Innovation",
     title: "The Drug That Knows Where to Go",
     story: "A patient needs a powerful drug, but distributing it throughout the body also affects healthy tissue.",
@@ -289,8 +276,7 @@ export const problems = [
   },
   {
     id: "INNOVATION-04",
-    imageLink: "",
-    videoLink: "",
+    docLink: "",
     track: "Healthcare Innovation",
     title: "The Gut That Lost Its Balance",
     story: "After repeated antibiotic treatment, a patient's gut microbiome becomes disrupted, leading to persistent gastrointestinal problems.",
@@ -311,8 +297,7 @@ export const problems = [
   },
   {
     id: "INNOVATION-05",
-    imageLink: "",
-    videoLink: "",
+    docLink: "",
     track: "Healthcare Innovation",
     title: "The Nerve That Needs a Bridge",
     story: "A young patient suffers a traumatic nerve injury. The damaged nerve ends cannot easily reconnect, resulting in weakness and loss of sensation.",
