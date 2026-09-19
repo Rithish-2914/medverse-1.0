@@ -26,6 +26,7 @@ export default function JudgePage() {
   const [teams, setTeams] = useState<any[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
     const [teamDoc, setTeamDoc] = useState("");
+    const [teamTwist, setTeamTwist] = useState<any>(null);
   const [submissions, setSubmissions] = useState<any[]>([]);
   const [existingScore, setExistingScore] = useState<any>(null);
   const [scores, setScores] = useState<any>({ medical:5, technical:5, adapt:5, budget:5, innovation:5, pitch:5 });
@@ -100,7 +101,7 @@ export default function JudgePage() {
       api(`/api/judge/submissions?teamCode=${code}&round=${activeRound}`),
       api(`/api/judge/score/${code}/${activeRound}`),
     ]);
-    if (subRes.ok) { setSubmissions(subRes.data.submissions || []); setTeamDoc(subRes.data.docLink || ""); }
+    if (subRes.ok) { setSubmissions(subRes.data.submissions || []); setTeamDoc(subRes.data.docLink || ""); setTeamTwist(subRes.data.twist || null); }
     if (scoreRes.ok && scoreRes.data.score) setExistingScore(scoreRes.data.score);
     else setExistingScore(null);
     setLoading(false);
@@ -225,7 +226,16 @@ export default function JudgePage() {
     )}
   </div>
   
-                    {submissions.length===0 ? (
+                    
+                      {teamTwist && (
+                        <div style={{background: "var(--coral)", color: "#fff", padding: "16px", borderRadius: "6px", marginBottom: "20px", display: "flex", flexDirection: "column", gap: "8px"}}>
+                          <h4 style={{margin: 0, fontFamily: "var(--display)", fontSize: "1.1rem"}}>TWIST ACTIVE FOR THIS TEAM</h4>
+                          <p style={{margin: 0, fontSize: "0.9rem", fontFamily: "var(--mono)"}}><strong>Limitation:</strong> {teamTwist.limitation}</p>
+                          <p style={{margin: 0, fontSize: "0.9rem", fontFamily: "var(--mono)"}}><strong>New Budget:</strong> {teamTwist.budget}</p>
+                        </div>
+                      )}
+
+                      {submissions.length===0 ? (
                       <p style={{fontFamily:"var(--mono)", fontSize:"0.8rem", color:"#8FA8AD"}}>No submissions from this team yet.</p>
                     ) : submissions.map(s=>(
                       <div key={s.id} style={{padding:"20px", background:"var(--paper)", border:"1px solid var(--line)", borderRadius:"6px", marginBottom:"16px"}}>
