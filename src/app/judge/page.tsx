@@ -215,7 +215,16 @@ export default function JudgePage() {
               ) : (
                 <>
                   <div style={{...S.pcard, marginBottom:"20px"}}>
-                    <h4 style={S.h4}>Submissions Queue</h4>
+                    
+  <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"20px"}}>
+    <h4 style={{...S.h4, margin:0}}>Submissions Queue</h4>
+    {teamDoc && (
+      <button onClick={() => window.open(teamDoc, '_blank')} style={{...S.btn, background:"var(--teal)", color:"var(--teal-deep)", border:"none", padding:"8px 16px", fontSize:"0.85rem", fontWeight:600}}>
+        View Problem Document (Docs)
+      </button>
+    )}
+  </div>
+  
                     {submissions.length===0 ? (
                       <p style={{fontFamily:"var(--mono)", fontSize:"0.8rem", color:"#8FA8AD"}}>No submissions from this team yet.</p>
                     ) : submissions.map(s=>(
