@@ -209,7 +209,18 @@ export default function AdminPage() {
             <button style={{...S.btn, background:"var(--teal)", color:"var(--teal-deep)", fontWeight:600, marginTop:"14px"}} onClick={createJudge}>Create Judge Account</button>
           </div>
 
+          
           <div style={{...S.pcard, marginTop:"22px"}}>
+            <h4 style={S.h4}>Change Team Problem Statement</h4>
+            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px"}}>
+              <div><label style={{fontFamily:"var(--mono)", fontSize:"0.7rem", textTransform:"uppercase", color:"var(--ink)", display:"block", marginBottom:"6px"}}>Team Code</label><input style={S.input} value={changeProblemTeam} onChange={e=>setChangeProblemTeam(e.target.value)} placeholder="e.g. MV-A-1234" /></div>
+              <div><label style={{fontFamily:"var(--mono)", fontSize:"0.7rem", textTransform:"uppercase", color:"var(--ink)", display:"block", marginBottom:"6px"}}>New Problem ID</label><input style={S.input} value={changeProblemId} onChange={e=>setChangeProblemId(e.target.value)} placeholder="e.g. AI-01, DEVICE-03" /></div>
+            </div>
+            <button style={{...S.btn, background:"var(--coral)", color:"#fff", fontWeight:600, marginTop:"14px"}} onClick={doChangeProblem}>Force Change Problem</button>
+          </div>
+
+          <div style={{...S.pcard, marginTop:"22px"}}>
+
             <h4 style={S.h4}>Assign judges — {ROUNDS[ri]}</h4>
             <p style={{fontFamily:"var(--mono)", fontSize:"0.72rem", color:"#8FA8AD", marginBottom:"14px"}}>Assignment is per round on purpose — reassign for each new round.</p>
             <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px"}}>
