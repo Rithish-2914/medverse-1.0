@@ -213,7 +213,7 @@ export const problems = [
   },
   {
     id: "INNOVATION-01",
-    docLink: "",
+    docLink: "https://docs.google.com/document/d/1e-pPVXYWLAjmDClnjYlF1oA5cy2vWLyS/preview",
     track: "Healthcare Innovation",
     title: "The Implant Bacteria Love",
     story: "A patient receives an implant, but bacteria attach to its surface and form a difficult-to-treat biofilm.",
@@ -234,7 +234,7 @@ export const problems = [
   },
   {
     id: "INNOVATION-02",
-    docLink: "",
+    docLink: "https://docs.google.com/document/d/15xKswsN-EYXY_84d8Qvdjp8ar2__wkB0/preview",
     track: "Healthcare Innovation",
     title: "The Implant the Body Rejects",
     story: "A patient's implant performs its mechanical function, but the body develops an excessive foreign-body response around it.",
@@ -255,7 +255,7 @@ export const problems = [
   },
   {
     id: "INNOVATION-03",
-    docLink: "",
+    docLink: "https://docs.google.com/document/d/1rATa-Gj00RhrDZv73CMxFir3dmjJHjjZ/preview",
     track: "Healthcare Innovation",
     title: "The Drug That Knows Where to Go",
     story: "A patient needs a powerful drug, but distributing it throughout the body also affects healthy tissue.",
@@ -276,7 +276,7 @@ export const problems = [
   },
   {
     id: "INNOVATION-04",
-    docLink: "",
+    docLink: "https://docs.google.com/document/d/109DPh9syKo0N-BYLa85DRK_oKcXxgSsQ/preview",
     track: "Healthcare Innovation",
     title: "The Gut That Lost Its Balance",
     story: "After repeated antibiotic treatment, a patient's gut microbiome becomes disrupted, leading to persistent gastrointestinal problems.",
@@ -297,7 +297,7 @@ export const problems = [
   },
   {
     id: "INNOVATION-05",
-    docLink: "",
+    docLink: "https://docs.google.com/document/d/1UL1VQ-EMsrf0DQBsPUsQV02Ht_DlfAF8/preview",
     track: "Healthcare Innovation",
     title: "The Nerve That Needs a Bridge",
     story: "A young patient suffers a traumatic nerve injury. The damaged nerve ends cannot easily reconnect, resulting in weakness and loss of sensation.",
