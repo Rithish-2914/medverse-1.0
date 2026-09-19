@@ -17,21 +17,21 @@ export async function POST(req: NextRequest) {
   const budgetStr = 'Rs. ' + p.budget.toLocaleString();
   const techStr = p.technologies.join(', ');
 
-  const existing = await sql\SELECT 1 FROM kits WHERE team_code = \$teamCode\;
+  const existing = await sql`SELECT 1 FROM kits WHERE team_code = ${teamCode}`;
   if (existing.length) {
-    await sql\
+    await sql`
       UPDATE kits 
-      SET disease = \${diseaseStr}\, patient = \${p.story}\, problem = \${p.problemStatement}\, tech = \${techStr}\, budget = \${budgetStr}\, constraint_text = \${p.limitation}\
-      WHERE team_code = \$teamCode
-    \;
+      SET disease = ${diseaseStr}, patient = ${p.story}, problem = ${p.problemStatement}, tech = ${techStr}, budget = ${budgetStr}, constraint_text = ${p.limitation}
+      WHERE team_code = ${teamCode}
+    `;
   } else {
-    await sql\
+    await sql`
       INSERT INTO kits (team_code, disease, patient, problem, tech, budget, constraint_text)
-      VALUES (\$teamCode, \${diseaseStr}\, \${p.story}\, \${p.problemStatement}\, \${techStr}\, \${budgetStr}\, \${p.limitation}\)
-    \;
+      VALUES (${teamCode}, ${diseaseStr}, ${p.story}, ${p.problemStatement}, ${techStr}, ${budgetStr}, ${p.limitation})
+    `;
   }
 
-  await sql\INSERT INTO admin_log (actor, message) VALUES ('organizer', 'Forced changed problem for team ' || \$teamCode || ' to ' || \$problemId)\;
+  await sql`INSERT INTO admin_log (actor, message) VALUES ('organizer', 'Forced changed problem for team ' || ${teamCode} || ' to ' || ${problemId})`;
 
   return NextResponse.json({ ok: true });
 }
