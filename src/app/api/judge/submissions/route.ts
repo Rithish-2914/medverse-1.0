@@ -16,7 +16,7 @@ let docLink = '';
 if (kit.length) {
   const pId = kit[0].disease.split(':')[0];
   const { problems } = require('@/data/problems');
-  const p = problems.find((x) => x.id === pId);
+  const p = problems.find((x: any) => x.id === pId);
   if (p) docLink = p.docLink || '';
 }
 return NextResponse.json({ submissions: rows, docLink });
