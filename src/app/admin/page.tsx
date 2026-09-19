@@ -19,6 +19,8 @@ export default function AdminPage() {
   const [newJudgePass, setNewJudgePass] = useState("");
   const [assignJudge, setAssignJudge] = useState("");
   const [assignTeam, setAssignTeam] = useState("");
+  const [changeProblemTeam, setChangeProblemTeam] = useState("");
+  const [changeProblemId, setChangeProblemId] = useState("");
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -103,6 +105,16 @@ export default function AdminPage() {
     const { ok, data } = await api("/api/admin/create-judge", "POST", { username: newJudgeUser, tempPassword: newJudgePass });
     if (!ok) alert(data.error || "Error");
     setNewJudgeUser(""); setNewJudgePass(""); await loadAll(); setLoading(false);
+  }
+
+  async function doChangeProblem() {
+    if (!changeProblemTeam || !changeProblemId) return;
+    setLoading(true); setMsg("");
+    const { ok, data } = await api("/api/admin/change-kit", "POST", { teamCode: changeProblemTeam.toUpperCase(), problemId: changeProblemId.toUpperCase() });
+    if (!ok) alert(data.error || "Error");
+    else alert("Problem changed successfully!");
+    setChangeProblemTeam(""); setChangeProblemId("");
+    await loadAll(); setLoading(false);
   }
 
   async function doAssign() {
