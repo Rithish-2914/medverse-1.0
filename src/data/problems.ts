@@ -106,7 +106,7 @@ export const problems = [
   },
   {
     id: "DEVICE-01",
-    docLink: "",
+    docLink: "https://docs.google.com/document/d/1m2psVDppnFftVtL3z943kniqPcZgMu17/preview",
     track: "Medical Devices & Hardware",
     title: "Ulcer Before It Appears",
     story: "A bedridden patient spends most of the day in the same position. By the time visible skin damage appears, tissue injury may already be significant.",
@@ -127,7 +127,7 @@ export const problems = [
   },
   {
     id: "DEVICE-02",
-    docLink: "",
+    docLink: "https://docs.google.com/document/d/1sDW4H3aojykkG_8Vkszr7oapOzELih6u/preview",
     track: "Medical Devices & Hardware",
     title: "The Fistula That Changed",
     story: "A dialysis patient depends on an AV fistula for regular treatment. Changes in blood flow can indicate serious complications.",
@@ -149,7 +149,7 @@ export const problems = [
   },
   {
     id: "DEVICE-03",
-    docLink: "",
+    docLink: "https://docs.google.com/document/d/1YYn0UbAzJLpBCCWnplrrUODR87QAwBsj/preview",
     track: "Medical Devices & Hardware",
     title: "The Hidden Swallow",
     story: "After a stroke, a patient appears to eat normally but has difficulty swallowing safely. Small amounts of food or liquid may enter the airway without obvious symptoms.",
@@ -170,7 +170,7 @@ export const problems = [
   },
   {
     id: "DEVICE-04",
-    docLink: "",
+    docLink: "https://docs.google.com/document/d/1zOkgXe00mxr3MKl5TQlOLiEankWFG8CN/preview",
     track: "Medical Devices & Hardware",
     title: "The Prosthesis That Doesn't Fit Tomorrow",
     story: "A prosthetic limb fits well in the morning but becomes uncomfortable later because pressure and tissue volume change throughout the day.",
@@ -192,7 +192,7 @@ export const problems = [
   },
   {
     id: "DEVICE-05",
-    docLink: "",
+    docLink: "https://docs.google.com/document/d/1VlIc_ajuZEu9kZhBUgNdtYX11r9IFhXG/preview",
     track: "Medical Devices & Hardware",
     title: "Keeping a Newborn Warm",
     story: "A premature newborn in a resource-limited centre struggles to maintain body temperature. Nurses cannot continuously monitor the baby.",
