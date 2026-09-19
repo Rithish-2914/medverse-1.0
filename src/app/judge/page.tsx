@@ -25,6 +25,7 @@ export default function JudgePage() {
   const [activeRound, setActiveRound] = useState(0);
   const [teams, setTeams] = useState<any[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
+    const [teamDoc, setTeamDoc] = useState("");
   const [submissions, setSubmissions] = useState<any[]>([]);
   const [existingScore, setExistingScore] = useState<any>(null);
   const [scores, setScores] = useState<any>({ medical:5, technical:5, adapt:5, budget:5, innovation:5, pitch:5 });
@@ -99,7 +100,7 @@ export default function JudgePage() {
       api(`/api/judge/submissions?teamCode=${code}&round=${activeRound}`),
       api(`/api/judge/score/${code}/${activeRound}`),
     ]);
-    if (subRes.ok) setSubmissions(subRes.data.submissions || []);
+    if (subRes.ok) { setSubmissions(subRes.data.submissions || []); setTeamDoc(subRes.data.docLink || ""); }
     if (scoreRes.ok && scoreRes.data.score) setExistingScore(scoreRes.data.score);
     else setExistingScore(null);
     setLoading(false);
