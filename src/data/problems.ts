@@ -1,7 +1,7 @@
 export const problems = [
   {
     id: "AI-01",
-    docLink: "",
+    docLink: "https://docs.google.com/document/d/1mAYweREMa7YMFeLn08Iv_IxCLqEaPNQL/preview",
     track: "AI",
     title: "Autoimmune Flare",
     story: "A 24-year-old patient with an autoimmune disease experiences unpredictable flare-ups. Subtle changes in sleep, fatigue, pain and activity often appear before she feels significantly worse.",
@@ -22,7 +22,7 @@ export const problems = [
   },
   {
     id: "AI-02",
-    docLink: "",
+    docLink: "https://docs.google.com/document/d/1blnyOO-01mtwb7OLITd4_KTufepSeSEz/preview",
     track: "AI",
     title: "The Disease Nobody Can Name",
     story: "A 16-year-old has spent years visiting doctors because of several unusual symptoms that individually appear unrelated.",
@@ -43,7 +43,7 @@ export const problems = [
   },
   {
     id: "AI-03",
-    docLink: "",
+    docLink: "https://docs.google.com/document/d/1gHFCaQrPe2Gu1maj671JHDWU_z7zhPO6/preview",
     track: "AI",
     title: "Antibiotic That Stops Working",
     story: "A patient develops a serious bacterial infection. The doctor needs to choose treatment quickly, but the hospital has incomplete historical antibiotic-resistance data.",
@@ -64,7 +64,7 @@ export const problems = [
   },
   {
     id: "AI-04",
-    docLink: "",
+    docLink: "https://docs.google.com/document/d/1HOqGoLBqDXjinab0i_Ecnpmrlb_4KCWu/preview",
     track: "AI",
     title: "Seven Medicines, One Patient",
     story: "A 70-year-old takes medicines prescribed by three doctors. Individually they appear appropriate, but the combination may create interactions or duplication.",
@@ -85,7 +85,7 @@ export const problems = [
   },
   {
     id: "AI-05",
-    docLink: "",
+    docLink: "https://docs.google.com/document/d/15TytuLxY2Bv-XA3xPUCyCPeD1Jr-Olrk/preview",
     track: "AI",
     title: "When the Voice Changes",
     story: "A young person experiences changes in mood and daily functioning but does not want to repeatedly complete mental-health questionnaires. The doctor has been noticing changes in speech patterns in the patient.",
